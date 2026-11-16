@@ -1,0 +1,6 @@
+@tailwind base; @tailwind components; @tailwind utilities;
+body { min-height: 100vh; color: #fff; background: radial-gradient(120% 60% at 50% 0%, #4b2470 0%, #1a1033 45%, #0b0a1a 100%) fixed; }
+.glass { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); backdrop-filter: blur(12px); }
+.btn { @apply rounded-2xl px-5 py-3 font-semibold transition active:scale-95 disabled:opacity-50; background: linear-gradient(135deg,#5b57e0,#b06ab3 70%,#ff9aa8); }
+.btn-ghost { @apply rounded-2xl px-5 py-3 font-semibold glass; }
+.input { @apply w-full rounded-2xl px-4 py-3 outline-none text-white placeholder-white/40 glass focus:ring-2 focus:ring-iris; }
