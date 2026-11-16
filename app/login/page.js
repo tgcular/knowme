@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
@@ -39,6 +40,9 @@ export default function Login() {
       <button className="text-sm text-white/60" onClick={() => setMode(mode === "signup" ? "signin" : "signup")}>
         {mode === "signup" ? "Have an account? Sign in" : "New here? Create an account"}
       </button>
+      <p className="pt-2 text-center text-xs text-white/40">
+        <Link href="/privacy">Privacy Policy</Link> · <Link href="/terms">Terms</Link>
+      </p>
     </main>
   );
 }
