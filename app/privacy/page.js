@@ -11,7 +11,7 @@ export default function Privacy() {
       <H>How it is used</H>
       <p>Only to run the app: to sign you in, and to show your entries and photos back to you on your devices. We do not sell your data, show ads, or use your photos or entries for anything else.</p>
       <H>Who can see your entries</H>
-      <p>Entries are private to you by default. If sharing options are available and you choose to share an entry, the people you choose can see it. You can change this at any time.</p>
+      <p>Entries are private by default. For each entry you can choose to share it with selected friends, with all KnowMe users, or with anyone who has its link. People you share with can see that entry's photos, mood, text, and time, and your display name and username. Friends are added by request and approval. You can change an entry's visibility or turn off its link at any time.</p>
       <H>Where it is stored</H>
       <p>Your data is stored with our service providers: Supabase (accounts, database, and photo storage) and Vercel (hosting). Photos are kept in private storage and are only accessible to your account unless you share them.</p>
       <H>Camera and music</H>

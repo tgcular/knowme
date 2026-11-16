@@ -8,21 +8,22 @@ export default function Profile() {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [msg, setMsg] = useState("");
   const [dialog, setDialog] = useState(null); // "save" | "signout" | "delete"
 
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data }) => {
       setUser(data.user);
-      const { data: p } = await supabase.from("profiles").select("display_name").eq("id", data.user.id).single();
-      setName(p?.display_name || "");
+      const { data: p } = await supabase.from("profiles").select("display_name,username").eq("id", data.user.id).single();
+      setName(p?.display_name || ""); setUsername(p?.username || "");
     });
   }, []);
 
   async function save() {
     setDialog(null);
-    const { error } = await supabase.from("profiles").update({ display_name: name }).eq("id", user.id);
-    setMsg(error ? error.message : "Saved.");
+    const { error } = await supabase.from("profiles").update({ display_name: name, username: username || null }).eq("id", user.id);
+    setMsg(error ? (error.code === "23505" ? "That username is taken." : error.code === "23514" ? "Username: 3–20 characters, lowercase letters, numbers, or underscore." : error.message) : "Saved.");
   }
   async function signOut() { await supabase.auth.signOut(); router.replace("/login"); }
   async function deleteAccount() {
@@ -37,6 +38,7 @@ export default function Profile() {
       <h1 className="text-3xl font-bold">Me</h1>
       <p className="text-white/60">{user?.email}</p>
       <input className="input" placeholder="Display name" value={name} onChange={(e) => setName(e.target.value)} />
+      <input className="input" placeholder="Username (friends find you with this)" value={username} onChange={(e) => setUsername(e.target.value.toLowerCase())} />
       {msg && <p className="text-sm text-blush">{msg}</p>}
       <button className="btn w-full" onClick={() => setDialog("save")}>Save changes</button>
       <button className="btn-ghost w-full" onClick={() => setDialog("signout")}>Sign out</button>
