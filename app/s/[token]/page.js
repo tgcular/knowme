@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import RichText from "@/components/RichText";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "KnowMe entry", robots: { index: false } };
 
@@ -19,7 +20,8 @@ export default async function SharedLink({ params }) {
         <div className="grid grid-cols-2 gap-2">
           {s.map((x, i) => <img key={i} src={x.signedUrl} alt="" className="aspect-[3/4] w-full rounded-2xl object-cover" />)}
         </div>
-        {e.body && <p className="whitespace-pre-wrap text-white/80">{e.body}</p>}
+        {e.title && <h1 className="text-2xl font-bold">{e.title}</h1>}
+        {e.body && <RichText text={e.body} className="text-white/80" />}
       </div>
     </main>
   );

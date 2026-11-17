@@ -4,3 +4,21 @@ body { min-height: 100vh; color: #fff; background: radial-gradient(120% 60% at 5
 .btn { @apply rounded-2xl px-5 py-3 font-semibold transition active:scale-95 disabled:opacity-50; background: linear-gradient(135deg,#5b57e0,#b06ab3 70%,#ff9aa8); }
 .btn-ghost { @apply rounded-2xl px-5 py-3 font-semibold glass; }
 .input { @apply w-full rounded-2xl px-4 py-3 outline-none text-white placeholder-white/40 glass focus:ring-2 focus:ring-iris; }
+
+@keyframes photoIn { from { opacity: 0; transform: scale(1.06); } to { opacity: 1; transform: scale(1); } }
+.photo-in { animation: photoIn .45s cubic-bezier(.22,1,.36,1); }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.fade-up { animation: fadeUp .4s ease both; }
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Diary timeline entrance: dot, dotted line, then card, in order */
+@keyframes tlDot { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes tlLine { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes tlCard { from { opacity: 0; transform: translateY(20px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes tlFade { from { opacity: 0; } to { opacity: 1; } }
+.tl-in .tl-dot { animation: tlDot .3s cubic-bezier(.34,1.56,.64,1) backwards; animation-delay: var(--d); }
+.tl-in .tl-time { animation: tlFade .3s ease backwards; animation-delay: calc(var(--d) + .05s); }
+.tl-in .tl-line { animation: tlLine .5s ease-in-out backwards; animation-delay: calc(var(--d) + .12s); }
+.tl-in .tl-card { animation: tlCard .55s cubic-bezier(.22,1,.36,1) backwards; animation-delay: calc(var(--d) + .35s); }
+.card-in { animation: fadeUp .45s cubic-bezier(.22,1,.36,1) backwards; }

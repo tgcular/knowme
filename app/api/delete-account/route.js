@@ -10,6 +10,8 @@ export async function POST(req) {
   const uid = data.user.id;
   const { data: files } = await admin.storage.from("photos").list(uid, { limit: 1000 });
   if (files?.length) await admin.storage.from("photos").remove(files.map((f) => `${uid}/${f.name}`));
+  const { data: pics } = await admin.storage.from("avatars").list(uid, { limit: 100 });
+  if (pics?.length) await admin.storage.from("avatars").remove(pics.map((f) => `${uid}/${f.name}`));
   const { error: delErr } = await admin.auth.admin.deleteUser(uid); // entries cascade
   if (delErr) return Response.json({ error: delErr.message }, { status: 500 });
   return Response.json({ ok: true });

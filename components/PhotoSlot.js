@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { compress } from "@/lib/images";
 // One camera at a time: the back slot only opens after the front is taken.
 export default function PhotoSlot({ facing, label, active, photo, onCapture }) {
   const video = useRef(null);
@@ -10,17 +11,16 @@ export default function PhotoSlot({ facing, label, active, photo, onCapture }) {
   useEffect(() => {
     if (!open || !active) return;
     let stream;
-    navigator.mediaDevices?.getUserMedia({ video: { facingMode: { ideal: facing } }, audio: false })
+    navigator.mediaDevices?.getUserMedia({ video: { facingMode: { ideal: facing }, width: { ideal: 1280 } }, audio: false })
       .then((m) => { stream = m; if (video.current) video.current.srcObject = m; })
       .catch(() => setErr("Camera unavailable. Allow camera access in your browser settings."));
     return () => stream?.getTracks().forEach((t) => t.stop());
   }, [open, active, facing]);
 
-  function snap() {
-    const v = video.current, c = document.createElement("canvas");
-    c.width = v.videoWidth; c.height = v.videoHeight;
-    c.getContext("2d").drawImage(v, 0, 0);
-    c.toBlob((b) => { onCapture(b); setOpen(false); }, "image/jpeg", 0.8);
+  async function snap() {
+    const { blob } = await compress(video.current, { max: 1080, quality: 0.72 });
+    onCapture(blob);
+    setOpen(false);
   }
 
   return (

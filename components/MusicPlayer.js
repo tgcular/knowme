@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-const LOFI = "https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1";
+import Icon from "./Icon";
+
+export const DEFAULT_MUSIC = "https://www.youtube.com/watch?v=rFZHOHl-L8A";
 
 function toEmbed(link) {
   try {
@@ -14,25 +16,38 @@ function toEmbed(link) {
   return null;
 }
 
-export default function MusicPlayer() {
-  const [on, setOn] = useState(false);
-  const [link, setLink] = useState("");
-  const [bad, setBad] = useState(false);
-  useEffect(() => { try { setLink(localStorage.getItem("knowme_music") || ""); } catch {} }, []);
-  function change(v) {
-    setLink(v); setBad(!!v && !toEmbed(v));
-    try { localStorage.setItem("knowme_music", v); } catch {}
-  }
-  const src = (link && toEmbed(link)) || LOFI;
+export default function MusicPlayer({ autoPlay }) {
+  const [on, setOn] = useState(!!autoPlay);
+  const [link, setLink] = useState(DEFAULT_MUSIC);
+  const [edit, setEdit] = useState(false);
+  useEffect(() => { try { const v = localStorage.getItem("knowme_music"); if (v) setLink(v); } catch {} }, []);
+  const change = (v) => { setLink(v); try { localStorage.setItem("knowme_music", v); } catch {} };
+  const embed = toEmbed(link);
+  const src = embed || toEmbed(DEFAULT_MUSIC);
   return (
-    <div className="glass space-y-3 rounded-3xl p-4">
-      <label className="flex items-center justify-between">
-        <span className="font-semibold">🎧 Music {link && !bad ? "(your link)" : "(lofi)"}</span>
-        <input type="checkbox" className="h-6 w-11 accent-iris" checked={on} onChange={(e) => setOn(e.target.checked)} />
-      </label>
-      <input className="input text-sm" placeholder="Paste a YouTube or Spotify link (optional)" value={link} onChange={(e) => change(e.target.value)} />
-      {bad && <p className="text-xs text-blush">Only YouTube and Spotify links work. Playing lofi instead.</p>}
-      {on && <iframe src={src} title="Music" allow="autoplay; encrypted-media" className="h-40 w-full rounded-2xl" />}
+    <div className="glass overflow-hidden rounded-3xl">
+      <div className="flex items-center gap-3 p-3">
+        <span className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-iris to-blush"><Icon name="music" size={18} /></span>
+        <div className="min-w-0 flex-1">
+          <p className="font-semibold leading-tight">Background music</p>
+          <p className="truncate text-xs text-white/50">{link === DEFAULT_MUSIC ? "Default track" : "Your link"}</p>
+        </div>
+        <button aria-label="Change music" onClick={() => setEdit(!edit)} className="grid h-9 w-9 place-items-center rounded-full bg-white/10"><Icon name="pencil" size={16} /></button>
+        <button role="switch" aria-checked={on} aria-label="Music on or off" onClick={() => setOn(!on)}
+          className={`relative h-7 w-12 shrink-0 rounded-full transition ${on ? "bg-iris" : "bg-white/20"}`}>
+          <span className={`absolute top-0.5 h-6 w-6 rounded-full bg-white transition-all ${on ? "left-[22px]" : "left-0.5"}`} />
+        </button>
+      </div>
+      {edit && (
+        <div className="space-y-2 px-3 pb-3">
+          <input className="input text-sm" placeholder="YouTube or Spotify link" value={link} onChange={(e) => change(e.target.value)} />
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-blush">{link && !embed ? "Only YouTube and Spotify links work. Playing the default." : ""}</span>
+            <button className="text-white/70 underline" onClick={() => change(DEFAULT_MUSIC)}>Use default</button>
+          </div>
+        </div>
+      )}
+      {on && <iframe key={src} src={src} title="Music" allow="autoplay; encrypted-media" className="h-36 w-full" />}
     </div>
   );
 }
